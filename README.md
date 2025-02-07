@@ -2,7 +2,7 @@
 A medical software designed to help patients have easier access to view their medical information and allows patients and doctors to message each other via the software.
 
 ## Group Members & Accounts
-Kelly Frear @kellylfrear
+Kelly Frear @kellylfrear, Benjamine Medina @BenjiMedina5
 
 ## Features
 WIP
