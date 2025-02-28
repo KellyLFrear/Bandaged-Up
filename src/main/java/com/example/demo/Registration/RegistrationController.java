@@ -27,9 +27,9 @@ public class RegistrationController {
             @RequestParam(required = false) String insurance_number
     ) {
         if (role.equalsIgnoreCase("doctor")) {
-            registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, specialty, license_number);
+            registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, specialty, license_number, null);
         } else if (role.equalsIgnoreCase("patient")) {
-            registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, insurance_number, null);
+            registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, null, null, insurance_number);
         } else {
             return "Invalid role specified!";
         }
