@@ -30,7 +30,7 @@ public class LoginService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<String> loginUser(String username, String password, String role) {
+    public ResponseEntity<String> loginUser(String username, String password) {
         // Step 1: Find user by username
         Optional<User> foundUser = userRepository.findByUsername(username);
         if (foundUser.isEmpty()) {
@@ -46,9 +46,9 @@ public class LoginService {
         }
 
         // Step 3: Check the user's role
-        if (role.equalsIgnoreCase("doctor") && doctorRepository.existsByUser(user)) {
+        if (doctorRepository.existsByUser(user)) {
             return ResponseEntity.ok("Welcome, Doctor " + user.getUsername() + "!");
-        } else if (role.equalsIgnoreCase("patient") && patientRepository.existsByUser(user)) {
+        } else if (patientRepository.existsByUser(user)) {
             return ResponseEntity.ok("Welcome, Patient " + user.getUsername() + "!");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid role selection.");

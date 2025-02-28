@@ -32,7 +32,18 @@ public class RegistrationService {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Transactional
-    public void registerUser(String username, String password, String email, LocalDate dateOfBirth, String role, String firstName, String lastName, String specialtyOrInsurance, String licenseNumberOrInsuranceNumber) {
+    public void registerUser(
+            String username,
+            String password,
+            String email,
+            LocalDate dateOfBirth,
+            String role,
+            String firstName,
+            String lastName,
+            String specialty,
+            String licenseNumber,
+            String insuranceNumber
+    ) {
         // Step 1: Hash the user's password
         String passwordHashed = encoder.encode(password);
 
@@ -42,16 +53,16 @@ public class RegistrationService {
 
         // Step 3: Create the corresponding Doctor or Patient record
         if (role.equalsIgnoreCase("doctor")) {
-            if (specialtyOrInsurance == null || licenseNumberOrInsuranceNumber == null) {
+            if (specialty == null || licenseNumber == null) {
                 throw new IllegalArgumentException("Doctor registration requires specialty and license number.");
             }
-            Doctor doctor = new Doctor(user, firstName, lastName, specialtyOrInsurance, licenseNumberOrInsuranceNumber);
+            Doctor doctor = new Doctor(user, firstName, lastName, specialty, licenseNumber);
             doctorRepository.save(doctor);
         } else if (role.equalsIgnoreCase("patient")) {
-            if (licenseNumberOrInsuranceNumber == null) {
+            if (insuranceNumber == null) {
                 throw new IllegalArgumentException("Patient registration requires insurance number.");
             }
-            Patient patient = new Patient(user, firstName, lastName, licenseNumberOrInsuranceNumber);
+            Patient patient = new Patient(user, firstName, lastName, insuranceNumber);
             patientRepository.save(patient);
         } else {
             throw new IllegalArgumentException("Invalid role specified. Must be 'doctor' or 'patient'.");
