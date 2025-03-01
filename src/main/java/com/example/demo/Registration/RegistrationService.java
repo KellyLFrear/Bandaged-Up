@@ -48,7 +48,7 @@ public class RegistrationService {
         String passwordHashed = encoder.encode(password);
 
         // Step 2: Create User (but only commit if the full process succeeds)
-        User user = new User(username, passwordHashed, email, Timestamp.valueOf(LocalDateTime.now()), dateOfBirth);
+        User user = new User(username, passwordHashed, email, Timestamp.valueOf(LocalDateTime.now()), dateOfBirth, role);
         user = userRepository.save(user);  // Save and get the generated 'id'
 
         // Step 3: Create the corresponding Doctor or Patient record

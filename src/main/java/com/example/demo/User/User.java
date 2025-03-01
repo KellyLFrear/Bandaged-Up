@@ -19,16 +19,24 @@ public class User {
     private String email;
     private Timestamp created_at;
     private LocalDate date_of_birth;
+    private String role;
 
     public User() {
     }
 
-    public User(String username, String password_hashed, String email, Timestamp created_at, LocalDate date_of_birth) {
+    public User(String username, String password_hashed, String email, Timestamp created_at, LocalDate date_of_birth, String role) {
         this.username = username;
         this.password_hashed = password_hashed;
         this.email = email;
         this.created_at = created_at;
         this.date_of_birth = date_of_birth;
+        this.role = role;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public long getId() {
