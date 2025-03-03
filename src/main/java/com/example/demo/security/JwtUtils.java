@@ -2,9 +2,13 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtUtils {
     private String secretKey = "TeAm10'sSeCrEtKeY999fffINEEDTOMAKETHIS256bitssoIMjustTYPINGrandomnessNOW";  // Ensure this key is securely stored in production
     private long expirationTime = 1000 * 60 * 60 * 24;  // 1 day expiration time for the token (adjust as needed)
@@ -47,5 +51,15 @@ public class JwtUtils {
             // Handle other exceptions such as expired token
             throw new RuntimeException("Invalid JWT token", e);
         }
+    }
+
+    // Helper method to extract username from jwt
+    public String extractUsername(String token) {
+        return parseToken(token).getSubject();
+    }
+
+    // Helper method to extract the role from jwt
+    public String extractRole(String token) {
+        return parseToken(token).get("role", String.class);
     }
 }
