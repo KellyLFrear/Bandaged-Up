@@ -1,6 +1,8 @@
 package com.example.demo.Login;
 
+import com.example.demo.Doctor.Doctor;
 import com.example.demo.Doctor.DoctorRepository;
+import com.example.demo.Patient.Patient;
 import com.example.demo.Patient.PatientRepository;
 import com.example.demo.User.User;
 import com.example.demo.User.UserRepository;
@@ -37,32 +39,37 @@ public class LoginService {
         // Step 1: Find user by username
         Optional<User> foundUser = userRepository.findByUsername(username);
         if (foundUser.isEmpty()) {
-            return ("User not found");
+            return "User not found";
         }
 
-
+        // Extract user info
         User user = foundUser.get();
+        String role = user.getRole();
 
         // Step 2: Verify password using BCrypt
         if (!passwordEncoder.matches(password, user.getHashedPassword())) {
-            return ("Wrong password");
+            return "Wrong password";
         }
 
-        String jwtToken = jwtUtils.generateToken(username, user.getRole());
-        return jwtToken;
-
-        // Step 3: Check the user's role
-        /*
-        if (doctorRepository.existsByUser(user)) {
-            return ResponseEntity.ok("Welcome, Doctor " + user.getUsername() + "!");
-        } else if (patientRepository.existsByUser(user)) {
-            return ResponseEntity.ok("Welcome, Patient " + user.getUsername() + "!");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid role selection.");
+        // Step 3: Generate a token based on the user's role
+        if ("PATIENT".equalsIgnoreCase(role)) {
+            Patient patientData = patientRepository.findByUserId(user.getId());
+            if (patientData == null) {
+                return "Patient record not found";
+            }
+            Long patientId = patientData.getId();
+            return jwtUtils.generatePatientToken(username, role, patientId);
+        } else if ("DOCTOR".equalsIgnoreCase(role)) {
+            Doctor doctorData = doctorRepository.findByUserId(user.getId());
+            if (doctorData == null) {
+                return "Doctor record not found";
+            }
+            Long doctorId = doctorData.getId();
+            return jwtUtils.generateDoctorToken(username, role, doctorId);
         }
-         */
 
-
+        // Step 4: Handle unknown roles
+        return "Invalid role selection";
     }
 
 }
