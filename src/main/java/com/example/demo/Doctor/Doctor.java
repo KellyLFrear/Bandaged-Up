@@ -75,4 +75,8 @@ public class Doctor {
                 ", license_number='" + license_number + '\'' +
                 '}';
     }
+
+    public Long getId() {
+        return this.id;
+    }
 }
