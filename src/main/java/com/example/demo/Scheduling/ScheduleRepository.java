@@ -11,4 +11,8 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findByDoctorId(Long doctorId);
     List<Schedule> findByDoctorIdAndDate(Long doctorId, LocalDate date);
+    Schedule findById(long id);
+    List<Schedule> findByAptType(String aptType);
+    List<Schedule> findByDate(LocalDate date);
+    List<Schedule> findByAptTypeAndDate(String aptType, LocalDate date);
 }
