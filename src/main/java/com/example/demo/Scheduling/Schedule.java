@@ -31,14 +31,14 @@ public class Schedule {
     private LocalTime endTime;
 
     @Column(name="apt_type")
-    private String apt_type;
+    private String aptType;
 
     public Schedule(Doctor doctor, LocalDate date, LocalTime startTime, LocalTime endTime, String appointment_type) {
         this.doctor = doctor;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.apt_type = appointment_type;
+        this.aptType = appointment_type;
     }
 
     public Schedule() {
@@ -46,11 +46,11 @@ public class Schedule {
     }
 
     public String getAppointment_type() {
-        return apt_type;
+        return aptType;
     }
 
     public void setAppointment_type(String appointment_type) {
-        this.apt_type = appointment_type;
+        this.aptType = appointment_type;
     }
 
     public long getScheduleId() {
