@@ -53,10 +53,12 @@ public class RegistrationService {
 
         // Step 3: Create the corresponding Doctor or Patient record
         if (role.equalsIgnoreCase("doctor")) {
-            if (specialty == null || licenseNumber == null) {
-                throw new IllegalArgumentException("Doctor registration requires specialty and license number.");
+            Doctor doctor;
+            if (specialty == null && licenseNumber == null) {
+                doctor = new Doctor(user, firstName, lastName);
+            } else {
+                doctor = new Doctor(user, firstName, lastName, specialty, licenseNumber);
             }
-            Doctor doctor = new Doctor(user, firstName, lastName, specialty, licenseNumber);
             doctorRepository.save(doctor);
         } else if (role.equalsIgnoreCase("patient")) {
             if (insuranceNumber == null) {

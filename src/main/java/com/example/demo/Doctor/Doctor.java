@@ -34,6 +34,13 @@ public class Doctor {
         this.license_number = license_number;
     }
 
+    // Constructor with specialty and license number left out
+    public Doctor(User user, String firstName, String lastName) {
+        this.user = user;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public String getFirstName() {
         return firstName;
     }
