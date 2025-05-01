@@ -4,7 +4,9 @@ import com.example.demo.Doctor.DoctorRepository;
 import com.example.demo.Patient.Patient;
 import com.example.demo.Patient.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,25 +27,31 @@ public class AppointmentService {
         this.patientRepository = patientRepo;
     }
 
+    @Transactional
     public Appointment bookAppointment(Long patientId, AppointmentRequest request) {
         Schedule corresponding_schedule = scheduleRepository.findById(request.getScheduleId())
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
-        if (!appointmentRepository.findByScheduleId(request.getScheduleId()).isEmpty()) {
-            throw new RuntimeException("Appointment already booked for this schedule");
+        if (corresponding_schedule.getIsBooked()) {
+            throw new IllegalStateException("Appointment already booked");
         }
 
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        Appointment appointment = new Appointment();
-        appointment.setPatient(patient);
-        appointment.setSchedule(corresponding_schedule);
-        appointment.setDate(corresponding_schedule.getDate());
-        appointment.setStartTime(corresponding_schedule.getStartTime());
-        appointment.setEndTime(corresponding_schedule.getEndTime());
-        appointment.setStatus("b");
-        return appointmentRepository.save(appointment);
+        corresponding_schedule.setIsBooked(true);
+
+        try {
+            Appointment appointment = new Appointment();
+            appointment.setPatient(patient);
+            appointment.setSchedule(corresponding_schedule);
+            appointment.setDate(corresponding_schedule.getDate());
+            appointment.setStartTime(corresponding_schedule.getStartTime());
+            appointment.setEndTime(corresponding_schedule.getEndTime());
+            return appointmentRepository.save(appointment);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new RuntimeException("Concurrent booking detected, please try again");
+        }
     }
 
     public void cancelAppointment(Appointment appointment) {

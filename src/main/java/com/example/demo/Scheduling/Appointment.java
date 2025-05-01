@@ -23,9 +23,6 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @Column(name="apt_stat")
-    private String status;
-
     @Column(name = "date")
     private LocalDate date;
 
@@ -35,11 +32,10 @@ public class Appointment {
     @Column(name="end_time")
     private LocalTime endTime;
 
-    public Appointment(Long id, Patient patient, LocalDate date, String status, LocalTime startTime, LocalTime endTime) {
+    public Appointment(Long id, Patient patient, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.id = id;
         this.patient = patient;
         this.date = date;
-        this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -78,14 +74,6 @@ public class Appointment {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public LocalTime getStartTime() {

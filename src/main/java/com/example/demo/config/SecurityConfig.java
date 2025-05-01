@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/home/patient").hasRole("PATIENT")
                         .requestMatchers("/patients/upload").hasRole("PATIENT")
                         .requestMatchers("/doctors/upload").hasRole("DOCTOR")
+                        .requestMatchers("/prescriptions/patients/prescriptions/list").hasRole("PATIENT")
                         .anyRequest().authenticated()  // All other endpoints require authentication
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
