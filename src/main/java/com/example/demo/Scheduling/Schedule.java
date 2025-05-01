@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name="Schedule", uniqueConstraints = @UniqueConstraint(columnNames = {"doctor_id", "date", "start_time", "end_time"}))
+@Table(name="Schedule", uniqueConstraints = @UniqueConstraint(columnNames = {"doctor_id", "date", "start_time", "end_time", "is_booked", "version"}))
 public class Schedule {
 
     @Id
@@ -32,6 +32,12 @@ public class Schedule {
 
     @Column(name="apt_type")
     private String aptType;
+
+    @Version
+    private Integer version;
+
+    @Column(name="is_booked", nullable = false)
+    private Boolean isBooked = false;
 
     public Schedule(Doctor doctor, LocalDate date, LocalTime startTime, LocalTime endTime, String appointment_type) {
         this.doctor = doctor;
@@ -92,4 +98,12 @@ public class Schedule {
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
+
+    public Integer getVersion() { return version; }
+
+    public void setVersion(Integer version) { this.version = version; }
+
+    public Boolean getIsBooked() { return isBooked; }
+
+    public void setIsBooked(Boolean isBooked) { this.isBooked = isBooked; }
 }

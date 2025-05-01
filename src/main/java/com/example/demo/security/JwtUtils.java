@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Locale;
 
 @Component
 public class JwtUtils {
@@ -38,6 +39,8 @@ public class JwtUtils {
     public String generateDoctorToken(String username, String role, Long doctorId) {
         // Create the signing key from the secret key
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+
+        role = role.toUpperCase(Locale.ROOT);
 
         // Set the current time and expiration time
         long now = System.currentTimeMillis();

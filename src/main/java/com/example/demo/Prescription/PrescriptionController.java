@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -91,9 +92,11 @@ public class PrescriptionController {
     public ResponseEntity<List<PrescriptionDTO>> getPatientPrescriptions(
             @RequestHeader("Authorization") String token) {
 
+        // Print all headers and body that came from request
+        System.out.println("Incoming request: " + token);
         Long patientId = jwtUtils.extractId(token);
         if (patientId == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
         }
 
         // Fetch prescriptions for this patient
