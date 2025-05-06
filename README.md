@@ -21,10 +21,10 @@ Bandaged-Up is a full-featured medical software system designed to bridge the co
 
 ## 🛠️ Technologies Used !! 
 - Frontend: JavaFX, Scenebuilder 
-- Backend: 
-- Database: MySQL
-- Authentication: JWT
-- Deployment: 
+- Backend: Java, Springboot
+- Database: Postgresql
+- Authentication: JWT, Httprequest
+- Deployment: N/A (isn't deployed anywhere!!)
 
 ---
 ## 🖥️ How To Use, Modify, & Download !!
