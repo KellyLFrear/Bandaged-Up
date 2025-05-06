@@ -29,6 +29,7 @@ Bandaged-Up is a full-featured medical software system designed to bridge the co
 
 ---
 ## 🖥️ How To Use, Modify, & Download !!
+In order to run this program, you'll need to download [postgresql](https://www.postgresql.org/download/). Postgresql is the database we used in order to run this program, so you'll need to have it installed to run it. If you want to **modify** anything, you'll need to download [Scenebuilder](https://gluonhq.com/products/scene-builder/) and to make sure JavaFX is installed. This will allow you to update the controllers with the UIs.  
 
 ---
 
