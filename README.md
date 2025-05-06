@@ -7,6 +7,7 @@ Bandaged-Up is a full-featured medical software system designed to bridge the co
 - Kelly Frear – [@kellylfrear](https://github.com/kellylfrear)  
 - Benjamine Medina – [@BenjiMedina5](https://github.com/BenjiMedina5)  
 - Gaving Rosander - [@rosanderg913](https://github.com/rosanderg913)
+- Our professors are also listed as contributers on this project!! :) Hello professors!
 
 ---
 
@@ -44,4 +45,4 @@ This project is for educational use only and is not intended for production medi
 ---
 
 ## 📬 Contact !!
-Feel free to open an issue or fork the repository if you want to explore! :) Thank yoU!! 
+Feel free to open an issue or fork the repository if you want to explore! :) Thank you!! 
