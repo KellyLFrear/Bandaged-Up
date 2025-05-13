@@ -45,6 +45,7 @@ public class LoginService {
         // Extract user info
         User user = foundUser.get();
         String role = user.getRole();
+        Long userId = user.getId();
 
         // Step 2: Verify password using BCrypt
         if (!passwordEncoder.matches(password, user.getHashedPassword())) {
@@ -58,14 +59,14 @@ public class LoginService {
                 return "Patient record not found";
             }
             Long patientId = patientData.getId();
-            return jwtUtils.generatePatientToken(username, role, patientId);
+            return jwtUtils.generatePatientToken(username, role, userId);
         } else if ("DOCTOR".equalsIgnoreCase(role)) {
             Doctor doctorData = doctorRepository.findByUserId(user.getId());
             if (doctorData == null) {
                 return "Doctor record not found";
             }
             Long doctorId = doctorData.getId();
-            return jwtUtils.generateDoctorToken(username, role, doctorId);
+            return jwtUtils.generateDoctorToken(username, role, userId);
         }
 
         // Step 4: Handle unknown roles

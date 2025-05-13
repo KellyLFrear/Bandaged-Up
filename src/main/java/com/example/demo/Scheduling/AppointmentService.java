@@ -28,8 +28,8 @@ public class AppointmentService {
     }
 
     @Transactional
-    public Appointment bookAppointment(Long patientId, AppointmentRequest request) {
-        Schedule corresponding_schedule = scheduleRepository.findById(request.getScheduleId())
+    public Appointment bookAppointment(Long patientId, Long scheduleId) {
+        Schedule corresponding_schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
         if (corresponding_schedule.getIsBooked()) {
@@ -81,6 +81,10 @@ public class AppointmentService {
     }
     public List<Schedule> getSchedulesByTypeAndDate(LocalDate date, String aptType) {
         return scheduleRepository.findByAptTypeAndDate(aptType, date);
+    }
+
+    public List<Appointment> getAppointmentsForDoctor(Long doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId);
     }
 
 

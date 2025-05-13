@@ -61,9 +61,6 @@ public class RegistrationService {
             }
             doctorRepository.save(doctor);
         } else if (role.equalsIgnoreCase("patient")) {
-            if (insuranceNumber == null) {
-                throw new IllegalArgumentException("Patient registration requires insurance number.");
-            }
             Patient patient = new Patient(user, firstName, lastName, insuranceNumber);
             patientRepository.save(patient);
         } else {

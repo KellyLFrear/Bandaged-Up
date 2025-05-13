@@ -1,5 +1,9 @@
 package com.example.demo.Prescription;
 
+import com.example.demo.Doctor.Doctor;
+import com.example.demo.Doctor.DoctorRepository;
+import com.example.demo.Patient.Patient;
+import com.example.demo.Patient.PatientRepository;
 import com.example.demo.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,10 @@ public class PrescriptionController {
 
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private DoctorRepository doctorRepository;
+    @Autowired
+    private PatientRepository patientRepository;
 
     // Patient uploads their past prescriptions
     @PostMapping("/patients/upload")
@@ -36,7 +44,12 @@ public class PrescriptionController {
 
 
 
-        Long patientId = jwtUtils.extractId(token);
+        Long userId = jwtUtils.extractId(token);
+        Patient patient = patientRepository.findByUserId(userId);
+        if (patient == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found");
+        }
+        Long patientId = patient.getId();
         if (patientId == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
         }
@@ -68,8 +81,9 @@ public class PrescriptionController {
             @RequestParam String endDate,
             @RequestParam(required = false) String notes) {
 
-        Long doctorId = jwtUtils.extractId(token);
-        if (doctorId == null) {
+        Long userId = jwtUtils.extractId(token);
+        Doctor doctor = doctorRepository.findByUserId(userId);
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
         }
 
@@ -78,7 +92,7 @@ public class PrescriptionController {
             LocalDate parsedStartDate = LocalDate.parse(startDate, formatter);
             LocalDate parsedEndDate = LocalDate.parse(endDate, formatter);
 
-            prescriptionService.addDoctorPrescription(patientId, medicationName, dosage, frequency, parsedStartDate, parsedEndDate, notes, doctorId);
+            prescriptionService.addDoctorPrescription(patientId, medicationName, dosage, frequency, parsedStartDate, parsedEndDate, notes, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Prescription added successfully");
 
         } catch (IllegalArgumentException e) {
@@ -87,17 +101,19 @@ public class PrescriptionController {
     }
 
     // Get prescriptions for the patient
-    @GetMapping("/patients/prescriptions/list")
     @PreAuthorize("hasRole('PATIENT')")
+    @GetMapping("/patients/prescriptions/list")
     public ResponseEntity<List<PrescriptionDTO>> getPatientPrescriptions(
             @RequestHeader("Authorization") String token) {
-
-        // Print all headers and body that came from request
-        System.out.println("Incoming request: " + token);
-        Long patientId = jwtUtils.extractId(token);
-        if (patientId == null) {
+        System.out.println("Patient id from token: " + jwtUtils.extractId(token));
+        System.out.println("Token recieved: " + token);
+        Long userId = jwtUtils.extractId(token);
+        if (userId == null) {
+            System.out.println("PatientId is null");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
         }
+        Patient patient = patientRepository.findByUserId(userId);
+        Long patientId = patient.getId();
 
         // Fetch prescriptions for this patient
         List<Prescription> prescriptions = prescriptionService.getPrescriptions(patientId);
