@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SecurityConfig {
@@ -32,20 +34,34 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())  // Disable CSRF for now (optional)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login").permitAll()  // Allow public access to register & login
-                        .requestMatchers("/home/doctor").hasRole("DOCTOR")
-                        .requestMatchers("/home/patient").hasRole("PATIENT")
-                        .requestMatchers("/patients/upload").hasRole("PATIENT")
-                        .requestMatchers("/doctors/upload").hasRole("DOCTOR")
-                        .requestMatchers("/prescriptions/patients/prescriptions/list").hasRole("PATIENT")
-                        .anyRequest().authenticated()  // All other endpoints require authentication
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter before Spring Security's auth filter
-                .formLogin(form -> form.disable()) // Disable default form-based login
-                .httpBasic(basic -> basic.disable()); // Disable basic authentication
+                .authorizeHttpRequests(requests -> requests
+                        //.requestMatchers("/register", "/login").permitAll()  // Allow public access to register & login
+                        //.requestMatchers("/home/doctor").permitAll()
+                        // .requestMatchers("/home/patient").permitAll()
+                        //.requestMatchers("/patients/upload").permitAll()
+                        //.requestMatchers("/doctors/upload").permitAll()
+                        //.requestMatchers("/patients/prescriptions/list").permitAll()
+                        .anyRequest().permitAll()
+                );
+                //.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
+                //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter before Spring Security's auth filter
+
 
         return http.build();
+    }
+    @Configuration
+    public class CorsConfig {
+        @Bean
+        public WebMvcConfigurer corsConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void addCorsMappings(CorsRegistry registry) {
+                    registry.addMapping("/**")
+                            .allowedOrigins("*") // Configure allowed origins
+                            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                            .allowedHeaders("*");
+                }
+            };
+        }
     }
 }

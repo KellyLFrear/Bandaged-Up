@@ -29,7 +29,11 @@ public class RegistrationController {
         if (role.equalsIgnoreCase("doctor")) {
             registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, specialty, license_number, null);
         } else if (role.equalsIgnoreCase("patient")) {
-            registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, null, null, insurance_number);
+            if (insurance_number != null) {
+                registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, null, null, insurance_number);
+            } else {
+                registrationService.registerUser(username, password, email, date_of_birth, role, first_name, last_name, null, null, null);
+            }
         } else {
             return "Invalid role specified!";
         }

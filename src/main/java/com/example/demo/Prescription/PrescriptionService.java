@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 
 @Service
@@ -27,19 +28,18 @@ public class PrescriptionService {
 
     // Patient uploads their past prescription (No doctor involved from bandaged up)
     public Prescription addPatientPrescription(Long patientId, String medication_name, String dosage, String frequency, LocalDate start_date, LocalDate end_date, String notes) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        Optional<Patient> patient = patientRepository.findById(patientId);
+        Patient pat = patient.get();
 
-        Prescription prescription = new Prescription(patient, medication_name, dosage, frequency, start_date, end_date, notes);
+        Prescription prescription = new Prescription(pat, medication_name, dosage, frequency, start_date, end_date, notes);
         return prescriptionRepository.save(prescription);
     }
 
     // Doctors upload prescriptions for their patients
     public Prescription addDoctorPrescription(Long patientId, String medication_name, String dosage, String frequency, LocalDate start_date, LocalDate end_date, String notes, Long doctorId) {
-        Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        Doctor doctor = doctorRepository.findByUserId(doctorId);
+        Patient patient = patientRepository.findByUserId(patientId);
+
 
         Prescription prescription = new Prescription(patient, medication_name, dosage, frequency, start_date, end_date, notes, doctor);
         return prescriptionRepository.save(prescription);

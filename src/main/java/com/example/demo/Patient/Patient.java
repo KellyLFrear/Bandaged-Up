@@ -15,8 +15,11 @@ public class Patient {
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
+    @Column(name="first_name")
     private String first_name;
+    @Column(name="last_name")
     private String last_name;
+
     private String phone;
     private String gender;
     private Integer height;
@@ -31,6 +34,12 @@ public class Patient {
         this.first_name = first_name;
         this.last_name = last_name;
         this.insurance_number = insurance_number;
+    }
+
+    public Patient(User user, String firstName, String lastName) {
+        this.user = user;
+        this.first_name = firstName;
+        this.last_name = lastName;
     }
 
     public Long getId() {

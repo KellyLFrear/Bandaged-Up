@@ -5,9 +5,13 @@ import com.example.demo.Doctor.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -51,5 +55,29 @@ public class ScheduleService {
         }
 
         scheduleRepository.delete(schedule);
+    }
+
+    public List<Schedule> findByDateAndTime(String date, String time) {
+        LocalDate newDate = LocalDate.parse(date);
+        LocalTime newTime;
+        try {
+            newTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm")); // Handles "8:30"
+        } catch (DateTimeParseException e) {
+            try {
+                newTime = LocalTime.parse(time); // Try default format "HH:mm:ss"
+            } catch (DateTimeParseException e2) {
+                throw new IllegalArgumentException("Invalid time format.  Use HH:mm:ss or H:mm", e2);
+            }
+        }
+        List<Schedule> schedules = scheduleRepository.findByDateAndStartTime(newDate, newTime);
+        // Filter schedules where is_booked is false
+        List<Schedule> availableSchedules = schedules.stream()
+                .filter(schedule -> !schedule.getIsBooked())
+                .collect(Collectors.toList());
+
+        if (availableSchedules.isEmpty()) {
+            throw new RuntimeException("No available schedules found for the specified date and time.");
+        }
+        return availableSchedules;
     }
 }

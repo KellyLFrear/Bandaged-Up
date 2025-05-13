@@ -1,6 +1,11 @@
 package com.example.demo.Scheduling;
 
+import com.example.demo.Doctor.Doctor;
+import com.example.demo.Doctor.DoctorRepository;
+import com.example.demo.Patient.Patient;
+import com.example.demo.Patient.PatientRepository;
 import com.example.demo.security.JwtUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,21 +18,37 @@ public class AppointmentController {
     private final AppointmentService service;
     private final JwtUtils jwtUtils;
 
+    @Autowired
+    private PatientRepository patientRepository;
+    @Autowired
+    private DoctorRepository doctorRepository;
+
     public AppointmentController(AppointmentService service, JwtUtils jwtUtils) {
         this.service = service;
         this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/book")
-    public ResponseEntity<Appointment> bookAppointment(@RequestHeader("Authorization") String token, @RequestBody AppointmentRequest request) {
-        Long patientId = jwtUtils.extractId(token);
-        return ResponseEntity.ok(service.bookAppointment(patientId, request));
+    public ResponseEntity<Appointment> bookAppointment(@RequestHeader("Authorization") String token, @RequestParam Long scheduleId) {
+        Long userId = jwtUtils.extractId(token);
+        Patient patient = patientRepository.findByUserId(userId);
+        Long patientId = patient.getId();
+        return ResponseEntity.ok(service.bookAppointment(patientId, scheduleId));
     }
 
     @GetMapping("/appointments-booked")
     public ResponseEntity<List<Appointment>> getAppointmentsBooked(@RequestHeader("Authorization") String token) {
-        Long patientId = jwtUtils.extractId(token);
+        Long userId = jwtUtils.extractId(token);
+        Patient patient = patientRepository.findByUserId(userId);
+        Long patientId = patient.getId();
         return ResponseEntity.ok(service.getAllAppointmentsForPatient(patientId));
+    }
+    @GetMapping("/appointments-by-doctor")
+    public ResponseEntity<List<Appointment>> getAppointmentsByDoctor(@RequestHeader("Authorization") String token) {
+        Long userId = jwtUtils.extractId(token);
+        Doctor doctor = doctorRepository.findByUserId(userId);
+        Long doctorId = doctor.getId();
+        return ResponseEntity.ok(service.getAppointmentsForDoctor(doctorId));
     }
 
     @GetMapping("/availability-by-type")

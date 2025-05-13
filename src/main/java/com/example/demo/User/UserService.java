@@ -35,4 +35,9 @@ public class UserService {
     }
 
 
+    public Long findIdByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(User::getId)
+                .orElse(null);
+    }
 }
